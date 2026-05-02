@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Jeongbin Kim</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      overflow-y: scroll;
+      scrollbar-width: none;
+    }
+    html::-webkit-scrollbar { display: none; }
+
+    html, body {
+      background: #ffffff;
+      color: #1a1a1a;
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    a { text-decoration: none; color: inherit; cursor: pointer; }
+
+    /* ═══════════════════════════════
+       HOME NAV
+    ═══════════════════════════════ */
+    #home-nav {
+      position: fixed;
+      top: 458px; left: 0; right: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 36px;
+      pointer-events: none;
+    }
+    #home-nav a {
+      font-size: 12px; font-weight: 700;
+      color: #1a1a1a;
+      transition: opacity 0.2s;
+      pointer-events: all;
+    }
+    #home-nav a:hover { opacity: 0.4; }
+    .home-nav-links { display: flex; gap: 20px; list-style: none; }
+
+    /* Projects-index nav */
+    #projects-nav {
+      position: fixed;
+      top: 458px; right: 36px;
+      z-index: 200;
+      display: none;
+      gap: 20px;
+    }
+    #projects-nav a { font-size: 12px; font-weight: 700; transition: opacity 0.2s; }
+    #projects-nav a:hover { opacity: 0.4; }
+    #projects-nav .nav-projects { color: #1a1a1a; }
+    #projects-nav .nav-info     { color: #CFCFCF; }
+
+    /* Info nav */
+    #info-nav {
+      position: fixed;
+      top: 458px; right: 36px;
+      z-index: 200;
+      display: none;
+      gap: 20px;
+    }
+    #info-nav a { font-size: 12px; font-weight: 700; color: #1a1a1a; transition: opacity 0.2s; }
+    #info-nav a:hover { opacity: 0.4; }
+    #info-nav .nav-projects { color: #CFCFCF; }
+    #info-nav .nav-info     { color: #1a1a1a; }
+
+    /* ═══════════════════════════════
+       HOME PAGE
+    ═══════════════════════════════ */
+    #page-home { display: block; position: relative; min-height: 100vh; }
+
+    .image-stack {
+      position: absolute;
+      left: 1100px; top: 276px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+
+    /* 데스크탑→태블릿 사이: 1100px에서 중앙으로 유동 전환 */
+    @media (max-width: 1385px) and (min-width: 541px) {
+      .image-stack {
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+    .image-item { width: 285px; opacity: 0; transform: translateY(16px); }
+    .image-item.animate { animation: fadeUp 0.65s ease forwards; }
+    .image-item:nth-child(1) { animation-delay: 0.05s; }
+    .image-item:nth-child(2) { animation-delay: 0.18s; }
+    .image-item:nth-child(3) { animation-delay: 0.31s; }
+    .image-item:nth-child(4) { animation-delay: 0.44s; }
+    .image-item:nth-child(5) { animation-delay: 0.57s; }
+    .image-item img { width: 100%; display: block; }
+
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+    /* ═══════════════════════════════
+       PROJECTS INDEX PAGE
+    ═══════════════════════════════ */
+    #page-projects {
+      display: none; position: relative;
+      min-height: 100vh; opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    #page-projects.visible { opacity: 1; }
+
+    #projects-name {
+      position: fixed;
+      top: 458px; left: 36px;
+      font-size: 12px; font-weight: 700;
+      cursor: pointer; transition: opacity 0.2s;
+    }
+    #projects-name:hover { opacity: 0.4; }
+
+    .projects-list { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+
+    .project-item {
+      position: absolute;
+      font-size: 12px; font-weight: 700;
+      cursor: pointer; transition: opacity 0.2s;
+      opacity: 0; transform: translateY(10px);
+    }
+    .project-item.animate { animation: fadeUp 0.5s ease forwards; }
+    .project-item:hover { opacity: 0.4 !important; }
+
+    .project-item.design      { left: clamp(245px, 48.4vw, 620px);  top: 303px; animation-delay: 0.05s; }
+    .project-item.painting    { left: clamp(417px, 83.6vw, 1010px); top: 410px; animation-delay: 0.15s; }
+    .project-item.photography { left: clamp(344px, 64.1vw, 820px);  top: 583px; animation-delay: 0.25s; }
+
+    /* ═══════════════════════════════
+       INFO PAGE
+    ═══════════════════════════════ */
+    #page-info {
+      display: none; min-height: 100vh;
+      padding: 0 36px; opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    #page-info.visible { opacity: 1; }
+    #page-info, #page-info * {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 12px; font-weight: 700;
+      line-height: 14px; color: #1a1a1a;
+    }
+    .info-bio { padding-top: 458px; padding-bottom: 60px; max-width: 823px; width: 100%; }
+    .inline-name { cursor: pointer; transition: opacity 0.2s; }
+    .inline-name:hover { opacity: 0.4; }
+    .info-cv { padding-bottom: 120px; }
+    .cv-demo-block { margin-bottom: 40px; }
+    .cv-demo-row { display: grid; grid-template-columns: 160px 1fr; margin-bottom: 14px; }
+    .cv-contact-rows { display: grid; grid-template-columns: 160px 1fr; }
+    .cv-section { margin-bottom: 40px; }
+    .cv-section-title { margin-bottom: 10px; }
+    .cv-year-rows { display: grid; grid-template-columns: 160px 1fr; row-gap: 14px; }
+    .cv-services-content { line-height: 14px; }
+
+    /* ═══════════════════════════════
+       DESIGN NAV
+    ═══════════════════════════════ */
+    #design-nav-left {
+      position: fixed;
+      top: 458px; left: 36px;
+      z-index: 200; display: none;
+      gap: 20px; align-items: baseline;
+    }
+    #design-nav-left a {
+      font-size: 12px; font-weight: 700;
+      color: #1a1a1a; transition: opacity 0.2s; cursor: pointer;
+    }
+    #design-nav-left a:hover { opacity: 0.4; }
+
+    #design-nav-right {
+      position: fixed;
+      top: 458px; right: 36px;
+      z-index: 200; display: none; gap: 20px;
+    }
+    #design-nav-right a {
+      font-size: 12px; font-weight: 700;
+      transition: opacity 0.2s; cursor: pointer;
+    }
+    #design-nav-right a:hover { opacity: 0.4; }
+    #design-nav-right .nav-projects { color: #1a1a1a; }
+    #design-nav-right .nav-info     { color: #1a1a1a; }
+
+    /* ═══════════════════════════════
+       DESIGN PAGE CONTENT
+    ═══════════════════════════════ */
+    #page-design {
+      display: none; opacity: 0;
+      transition: opacity 0.4s ease;
+      padding: 0 36px; padding-bottom: 120px;
+    }
+    #page-design.visible { opacity: 1; }
+
+    .design-list {
+      padding-top: 48px;
+      display: flex; flex-direction: column; gap: 32px;
+      max-width: 326px;
+      margin-left: calc(50% + 350px - 163px);
+    }
+    .design-entry .thumb { width: 326px; display: block; }
+    .design-entry .thumb img { width: 100%; display: block; }
+    .design-entry .caption {
+      margin-top: 6px; display: flex;
+      justify-content: space-between; align-items: baseline;
+    }
+    .design-entry .caption .title {
+      font-size: 12px; font-weight: 400; color: #1a1a1a;
+      font-family: 'Pretendard', Helvetica, Arial, sans-serif;
+    }
+    .design-entry .caption .title.latin { font-family: Helvetica, Arial, sans-serif; }
+    .design-entry .caption .year {
+      font-size: 12px; font-weight: 400; color: #1a1a1a;
+      font-family: Helvetica, Arial, sans-serif;
+    }
+
+    /* ═══════════════════════════════
+       PAINTING NAV
+    ═══════════════════════════════ */
+    #painting-nav-left {
+      position: fixed;
+      top: 458px; left: 36px;
+      z-index: 200; display: none;
+      gap: 20px; align-items: baseline;
+    }
+    #painting-nav-left a {
+      font-size: 12px; font-weight: 700;
+      color: #1a1a1a; transition: opacity 0.2s; cursor: pointer;
+    }
+    #painting-nav-left a:hover { opacity: 0.4; }
+
+    #painting-nav-right {
+      position: fixed;
+      top: 458px; right: 36px;
+      z-index: 200; display: none; gap: 20px;
+    }
+    #painting-nav-right a {
+      font-size: 12px; font-weight: 700;
+      color: #1a1a1a; transition: opacity 0.2s; cursor: pointer;
+    }
+    #painting-nav-right a:hover { opacity: 0.4; }
+    #painting-nav-right .nav-projects { color: #1a1a1a; }
+    #painting-nav-right .nav-info     { color: #1a1a1a; }
+
+    /* ═══════════════════════════════
+       PAINTING PAGE CONTENT
+    ═══════════════════════════════ */
+    #page-painting {
+      display: none; opacity: 0;
+      transition: opacity 0.4s ease;
+      padding: 0 36px; padding-bottom: 120px;
+    }
+    #page-painting.visible { opacity: 1; }
+
+    .painting-list {
+      padding-top: 48px;
+      display: flex; flex-direction: column; gap: 32px;
+      max-width: 326px;
+      /* 데스크탑: Design과 동일한 X축 기준 */
+      margin-left: calc(50% + 350px - 163px);
+    }
+
+    .painting-entry .thumb { width: 326px; display: block; }
+    .painting-entry .thumb img { width: 100%; display: block; }
+
+    .painting-entry .caption {
+      margin-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    /* 캡션 왼쪽: 제목 + 서브타이틀 세로 배열 */
+    .painting-entry .caption-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0px;
+    }
+
+    .painting-entry .caption .title {
+      font-size: 12px; font-weight: 400; color: #1a1a1a;
+      font-family: 'Pretendard', Helvetica, Arial, sans-serif;
+      line-height: 16px;
+    }
+    .painting-entry .caption .title.latin {
+      font-family: Helvetica, Arial, sans-serif;
+    }
+    .painting-entry .caption .subtitle {
+      font-size: 12px; font-weight: 400; color: #1a1a1a;
+      font-family: Helvetica, Arial, sans-serif;
+      line-height: 16px;
+    }
+    .painting-entry .caption .year {
+      font-size: 12px; font-weight: 400; color: #1a1a1a;
+      font-family: Helvetica, Arial, sans-serif;
+      white-space: nowrap;
+      align-self: flex-start;
+    }
+
+
+    /* ═══════════════════════════════
+       PHOTOGRAPHY NAV
+    ═══════════════════════════════ */
+    #photography-nav-left {
+      position: fixed;
+      top: 458px; left: 36px;
+      z-index: 200; display: none;
+      gap: 20px; align-items: baseline;
+    }
+    #photography-nav-left a {
+      font-size: 12px; font-weight: 700;
+      color: #1a1a1a; transition: opacity 0.2s; cursor: pointer;
+    }
+    #photography-nav-left a:hover { opacity: 0.4; }
+
+    #photography-nav-right {
+      position: fixed;
+      top: 458px; right: 36px;
+      z-index: 200; display: none; gap: 20px;
+    }
+    #photography-nav-right a {
+      font-size: 12px; font-weight: 700;
+      color: #1a1a1a; transition: opacity 0.2s; cursor: pointer;
+    }
+    #photography-nav-right a:hover { opacity: 0.4; }
+    #photography-nav-right .nav-projects { color: #1a1a1a; }
+    #photography-nav-right .nav-info     { color: #CFCFCF; }
+
+    /* ═══════════════════════════════
+       PHOTOGRAPHY PAGE CONTENT
+    ═══════════════════════════════ */
+    #page-photography {
+      display: none; opacity: 0;
+      transition: opacity 0.4s ease;
+      padding: 0 36px; padding-bottom: 120px;
+    }
+    #page-photography.visible { opacity: 1; }
+
+    .photography-list {
+      padding-top: 305px;
+      display: flex; flex-direction: column; gap: 32px;
+      max-width: 463px;
+      margin-left: calc(50% + 350px - 231.5px);
+    }
+
+    .photography-entry .thumb { width: 463px; display: block; }
+    .photography-entry .thumb img { width: 100%; display: block; }
+
+    .photography-entry .caption {
+      margin-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .photography-entry .caption .title {
+      font-size: 12px; font-weight: 400; color: #1a1a1a;
+      font-family: Helvetica, Arial, sans-serif;
+      line-height: 16px;
+    }
+    .photography-entry .caption .year {
+      font-size: 12px; font-weight: 400; color: #1a1a1a;
+      font-family: Helvetica, Arial, sans-serif;
+      white-space: nowrap;
+    }
+
+    /* ═══════════════════════════════
+       DETAIL PAGE NAV (공통)
+    ═══════════════════════════════ */
+    .detail-nav-left {
+      position: fixed;
+      top: 458px; left: 36px;
+      z-index: 200; display: none;
+      gap: 20px; align-items: baseline;
+    }
+    .detail-nav-left a {
+      font-size: 12px; font-weight: 700;
+      color: #1a1a1a; transition: opacity 0.2s; cursor: pointer;
+    }
+    .detail-nav-left a:hover { opacity: 0.4; }
+
+    .detail-nav-right {
+      position: fixed;
+      top: 458px; right: 36px;
+      z-index: 200; display: none; gap: 20px;
+    }
+    .detail-nav-right a {
+      font-size: 12px; font-weight: 700;
+      transition: opacity 0.2s; cursor: pointer;
+    }
+    .detail-nav-right a:hover { opacity: 0.4; }
+    .detail-nav-right .nav-projects { color: #1a1a1a; }
+    .detail-nav-right .nav-info     { color: #CFCFCF; }
+
+    /* ═══════════════════════════════
+       DETAIL PAGE CONTENT (공통)
+    ═══════════════════════════════ */
+    .detail-page {
+      display: none; opacity: 0;
+      transition: opacity 0.4s ease;
+      padding: 0 36px; padding-bottom: 120px;
+    }
+    .detail-page.visible { opacity: 1; }
+
+    /* 타이틀 블록 */
+    .detail-title-block {
+      position: relative;
+      height: 260px;
+    }
+    .detail-title-block .dt-name {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 12px; font-weight: 700;
+      position: absolute;
+      left: 50%; top: 175px;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+    .detail-title-block .dt-services {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 12px; font-weight: 400;
+      position: absolute;
+      left: calc(50% - 53px); top: 190px;
+      white-space: nowrap;
+      transform: rotate(-7deg);
+      transform-origin: left top;
+    }
+    .detail-title-block .dt-credit {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 12px; font-weight: 400;
+      font-style: italic;
+      position: absolute;
+      left: calc(50% + 7px); top: 196px;
+      white-space: nowrap;
+    }
+
+    /* 가로 스크롤 섹션 */
+    .detail-hscroll {
+      width: 100%;
+      overflow-x: scroll;
+      scrollbar-width: none;
+    }
+    .detail-hscroll::-webkit-scrollbar { display: none; }
+    .detail-hscroll-inner {
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+      width: max-content;
+    }
+    .detail-hscroll-img {
+      height: 420px;
+      flex-shrink: 0;
+    }
+    .detail-hscroll-img img {
+      height: 100%;
+      width: auto;
+      display: block;
+    }
+
+    /* Nuguna 타이틀 오버라이드 */
+    #page-issen .dt-services  { top: 195px; }
+    #page-painting-1 .dt-services { top: 196px; }
+    #page-painting-2 .dt-services { left: calc(50% - 53px + 43px); top: 194px; }
+    #page-painting-2 .dt-credit   { left: calc(50% + 7px + 30px); }
+    #page-painting-2 .detail-list { display:flex; flex-direction:column; align-items:center; margin:0; max-width:100%; }
+    #page-painting-2 .detail-img  { width: 200px; }
+    #page-painting-1 .dt-credit { left: calc(50% + 7px + 6px); }
+    #page-painting-1 .detail-list { display: flex; flex-direction: column; align-items: center; margin: 0; max-width: 100%; }
+    #page-painting-1 .detail-img { width: clamp(333px, 50vw, 500px); margin: 0; }
+    #page-nuguna .dt-services { left: calc(50% - 53px + 117px); top: 193px; }
+    #page-nuguna .dt-credit   { left: calc(50% + 7px + 68px); top: 198px; }
+
+    /* Feel 타이틀 오버라이드 */
+    #page-feel .dt-services { left: calc(50% - 53px + 100px); top: 191px; }
+    #page-feel .dt-credit   { left: calc(50% + 7px + 60px); top: 198px; }
+    #page-feel .detail-list { max-width: 770px; margin-left: calc(50% - 385px); }
+    #page-feel .detail-img  { width: 770px; }
+
+    /* Kumamoto 타이틀 오버라이드 */
+    #page-kumamoto .dt-services { top: 195px; }
+    #page-kumamoto .dt-credit   { left: calc(50% + 15px); }
+
+    /* Photo-1 타이틀 오버라이드 */
+    #page-photo-1 .dt-name     { font-weight: 700; white-space: nowrap; left: 50%; transform: translateX(-50%); }
+    #page-photo-1 .dt-services { font-style: italic; right: auto; left: calc(50% + 33px); transform: rotate(-7deg); transform-origin: left top; text-align: left; white-space: nowrap; top: 191px; }
+    #page-photo-1 .dt-credit   { right: auto; left: calc(50% + 70px); transform: none; text-align: left; white-space: nowrap; top: 196px; font-style: normal; }
+    #page-photo-1 .detail-list { max-width: 600px; width: clamp(200px, 100%, 600px); margin-left: auto; margin-right: auto; padding-top: 50px; }
+    #page-photo-1 .detail-img  { width: 100%; }
+
+    @media (max-width: 540px) {
+      #page-photo-1 .detail-list { max-width: 333px; }
+      #page-photo-2 .detail-list { max-width: 333px; }
+      .photography-list { max-width: 333px; }
+      .photography-entry .thumb { width: 100%; }
+      /* 디자인 상세페이지 모바일 333px */
+      #page-issen .detail-list,
+      #page-kumamoto .detail-list,
+      #page-feel .detail-list,
+      #page-nuguna .detail-list {
+        max-width: 333px;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      #page-issen .detail-img,
+      #page-kumamoto .detail-img,
+      #page-feel .detail-img,
+      #page-nuguna .detail-img {
+        width: 100%;
+        max-width: 333px;
+      }
+    }
+
+    /* Photo-2 타이틀 오버라이드 */
+    #page-photo-2 .dt-name     { font-weight: 700; white-space: nowrap; left: 50%; transform: translateX(-50%); }
+    #page-photo-2 .dt-services { font-style: italic; right: auto; left: calc(50% + 22px); transform: rotate(-7deg); transform-origin: left top; text-align: left; white-space: nowrap; top: 191px; }
+    #page-photo-2 .dt-credit   { right: auto; left: calc(50% + 62px); transform: none; text-align: left; white-space: nowrap; top: 196px; font-style: normal; }
+    #page-photo-2 .detail-list { max-width: 600px; width: clamp(200px, 100%, 600px); margin-left: auto; margin-right: auto; padding-top: 50px; }
+    #page-photo-2 .detail-img  { width: 100%; }
+
+    /* Painting-3 타이틀 오버라이드 */
+    #page-painting-3 .dt-name     { font-family: 'Pretendard', sans-serif; left: 50%; transform: translateX(-50%) rotate(0deg); }
+    #page-painting-3 .dt-services { left: calc(50% - 53px + 60px - 17px); top: calc(191px + 6px); }
+    #page-painting-3 .dt-credit   { left: calc(50% + 7px + 40px + 12px); top: 198px; }
+    #page-painting-3 .detail-list { max-width: 640px; margin-left: calc(50% - 320px); }
+    #page-painting-3 .detail-img  { width: 640px; }
+
+    @media (max-width: 540px) {
+      #page-painting-3 .detail-list { max-width: 333px; width: 100%; margin-left: auto; margin-right: auto; }
+      #page-painting-3 .detail-img  { width: 100%; max-width: 333px; }
+    }
+    .detail-list {
+      display: flex; flex-direction: column; gap: 32px;
+      max-width: 326px;
+      margin-left: calc(50% - 163px);
+    }
+    .detail-img { width: 326px; display: block; }
+    .detail-img img { width: 100%; display: block; }
+
+    /* 목차 이미지에 커서 추가 */
+    .design-entry .thumb,
+    .painting-entry .thumb,
+    .photography-entry .thumb { cursor: pointer; }
+
+    @media (max-width: 1300px) {
+      .design-list, .painting-list, .photography-list {
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .detail-nav-left { top: 19px; left: 28px; }
+      .detail-nav-right { top: 19px; right: 28px; }
+      .detail-title-block { margin-left: 28px; }
+      .detail-list { margin-left: 28px; }
+    }
+
+    @media (max-width: 540px) {
+      .detail-nav-left { top: 19px; left: 20px; }
+      .detail-nav-right { top: 19px; right: 20px; }
+      .detail-page { padding: 0 20px; padding-bottom: 80px; }
+      .detail-title-block { margin-left: 0; }
+      .detail-list { margin-left: 0; max-width: 100%; }
+      .detail-img { width: 100%; }
+    }
+    /* ═══════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════ */
+    @media (max-width: 900px) {
+      #home-nav { padding: 0 28px; }
+      #projects-nav, #info-nav { right: 28px; }
+      #design-nav-left { left: 28px; }
+      #design-nav-right { right: 28px; }
+      #painting-nav-left { left: 28px; }
+      #painting-nav-right { right: 28px; }
+      #photography-nav-left { left: 28px; }
+      #photography-nav-right { right: 28px; }
+      #page-info { padding: 0 28px; }
+      /* image-stack: handled by shared media query above */
+      #projects-name { left: 28px; }
+
+      .project-item.design      { left: 245px; top: 374px; }
+      .project-item.painting    { left: 477px; top: 446px; }
+      .project-item.photography { left: 344px; top: 547px; }
+
+      .info-bio { max-width: 554px; }
+      .cv-demo-row, .cv-contact-rows, .cv-year-rows {
+        grid-template-columns: 160px minmax(0, 350px);
+      }
+
+
+    }
+
+    @media (max-width: 540px) {
+      #home-nav { padding: 0 20px; }
+      #projects-nav, #info-nav { right: 20px; }
+      #design-nav-left  { top: 19px; left: 20px; }
+      #design-nav-right { top: 19px; right: 20px; }
+      #painting-nav-left  { top: 19px; left: 20px; }
+      #painting-nav-right { top: 19px; right: 20px; }
+      #photography-nav-left  { top: 19px; left: 20px; }
+      #photography-nav-right { top: 19px; right: 20px; }
+      #page-info { padding: 0 20px; }
+      .image-stack { display: none; }
+      #projects-name { left: 20px; }
+
+      .project-item.design      { left: 110px !important; top: 303px !important; }
+      .project-item.painting    { left: 275px !important; top: 410px !important; }
+      .project-item.photography { left: 150px !important; top: 583px !important; }
+
+      .info-bio { max-width: 273px; }
+      .cv-demo-row, .cv-contact-rows, .cv-year-rows {
+        grid-template-columns: 160px minmax(0, 214px);
+        column-gap: 20px;
+      }
+
+      #page-design, #page-painting, #page-photography { padding: 0 20px; padding-bottom: 80px; }
+
+      .design-list, .painting-list, .photography-list {
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── HOME nav ── -->
+  <nav id="home-nav">
+    <a onclick="showHome()">Jeongbin Kim</a>
+    <ul class="home-nav-links">
+      <li><a onclick="showProjects()">Projects</a></li>
+      <li><a onclick="showInfo()">Info</a></li>
+    </ul>
+  </nav>
+
+
+  <!-- ── DETAIL PAGE nav (공통) ── -->
+  <nav id="detail-nav-left" class="detail-nav-left">
+    <a onclick="showHome()">Jeongbin Kim</a>
+    <a id="detail-nav-parent" onclick="goToParent()"></a>
+  </nav>
+  <nav id="detail-nav-right" class="detail-nav-right">
+    <a class="nav-projects" onclick="showProjects()">Projects</a>
+    <a class="nav-info"     onclick="showInfo()">Info</a>
+  </nav>
+  <!-- ── DESIGN nav left ── -->
+  <nav id="design-nav-left">
+    <a onclick="showHome()">Jeongbin Kim</a>
+    <a onclick="showDesign()">Design</a>
+  </nav>
+
+  <!-- ── DESIGN nav right ── -->
+  <nav id="design-nav-right">
+    <a class="nav-projects" onclick="showProjects()">Projects</a>
+    <a class="nav-info"     onclick="showInfo()">Info</a>
+  </nav>
+
+  <!-- ── PAINTING nav left ── -->
+  <nav id="painting-nav-left">
+    <a onclick="showHome()">Jeongbin Kim</a>
+    <a onclick="showPainting()">Painting</a>
+  </nav>
+
+  <!-- ── PAINTING nav right ── -->
+  <nav id="painting-nav-right">
+    <a class="nav-projects" onclick="showProjects()">Projects</a>
+    <a class="nav-info"     onclick="showInfo()">Info</a>
+  </nav>
+
+
+  <!-- ── PHOTOGRAPHY nav left ── -->
+  <nav id="photography-nav-left">
+    <a onclick="showHome()">Jeongbin Kim</a>
+    <a onclick="showPhotography()">Photography</a>
+  </nav>
+
+  <!-- ── PHOTOGRAPHY nav right ── -->
+  <nav id="photography-nav-right">
+    <a class="nav-projects" onclick="showProjects()">Projects</a>
+    <a class="nav-info"     onclick="showInfo()">Info</a>
+  </nav>
+  <!-- ── PROJECTS nav ── -->
+  <nav id="projects-nav">
+    <a class="nav-projects" onclick="showHome()">Projects</a>
+    <a class="nav-info"     onclick="showInfo()">Info</a>
+  </nav>
+
+  <!-- ── INFO nav ── -->
+  <nav id="info-nav">
+    <a class="nav-projects" onclick="showProjects()">Projects</a>
+    <a class="nav-info"     onclick="showHome()">Info</a>
+  </nav>
+
+  <!-- ══ HOME ══ -->
+  <div id="page-home">
+    <main id="main">
+      <div class="image-stack" id="imageStack">
+        <div class="image-item animate"><img src="img5_silver.png"         alt="Silver Pitcher" /></div>
+        <div class="image-item animate"><img src="img3_ceramic.png"        alt="Ceramic Decanter" /></div>
+        <div class="image-item animate"><img src="img2_nautilus.png"       alt="Nautilus Shell Vessel" /></div>
+        <div class="image-item animate"><img src="img4_glass.png"          alt="Glass Vessel" /></div>
+        <div class="image-item animate"><img src="img1_spotted_bottle.png" alt="Spotted Perfume Bottle" /></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ══ PROJECTS INDEX ══ -->
+  <div id="page-projects">
+    <span id="projects-name" onclick="showHome()">Jeongbin Kim</span>
+    <div class="projects-list">
+      <span class="project-item design"      onclick="showDesign()">Design</span>
+      <span class="project-item painting"    onclick="showPainting()">Painting</span>
+      <span class="project-item photography" onclick="showPhotography()">Photography</span>
+    </div>
+  </div>
+
+  <!-- ══ ISSEN DETAIL ══ -->
+  <div id="page-issen" class="detail-page">
+    <div class="detail-title-block">
+      <span class="dt-name">Issen</span>
+      <span class="dt-services">Art Direction Visual Identity</span>
+      <span class="dt-credit">Jeongbin Kim 2026</span>
+    </div>
+    <div class="detail-list">
+      <div class="detail-img"><img src="issen_1.jpg" alt="ISSEN 01" /></div>
+      <div class="detail-img"><img src="issen_2.jpg" alt="ISSEN 02" /></div>
+      <div class="detail-img"><img src="issen_3.jpg" alt="ISSEN 03" /></div>
+      <div class="detail-img"><img src="issen_4.jpg" alt="ISSEN 04" /></div>
+      <div class="detail-img"><img src="issen_5.jpg" alt="ISSEN 05" /></div>
+      <div class="detail-img"><img src="issen_6.jpg" alt="ISSEN 06" /></div>
+      <div class="detail-img"><img src="issen_7.jpg" alt="ISSEN 07" /></div>
+      <div class="detail-img"><img src="issen_8.jpg" alt="ISSEN 08" /></div>
+    </div>
+  </div>
+
+  <!-- ══ FEEL DETAIL ══ -->
+  <div id="page-feel" class="detail-page">
+    <div class="detail-title-block">
+      <span class="dt-name">Make People FEEL FEEL FEEL !</span>
+      <span class="dt-services">Archive Editorial</span>
+      <span class="dt-credit">Jeongbin Kim 2025</span>
+    </div>
+    <div class="detail-list">
+      <div class="detail-img"><img src="feel_1.jpg" alt="Feel 01" /></div>
+      <div class="detail-img"><img src="feel_2.jpg" alt="Feel 02" /></div>
+      <div class="detail-hscroll">
+        <div class="detail-hscroll-inner">
+          <div class="detail-hscroll-img"><img src="feel_h1.jpg" alt="Feel H01" /></div>
+          <div class="detail-hscroll-img"><img src="feel_h2.jpg" alt="Feel H02" /></div>
+          <div class="detail-hscroll-img"><img src="feel_h3.jpg" alt="Feel H03" /></div>
+          <div class="detail-hscroll-img"><img src="feel_h4.jpg" alt="Feel H04" /></div>
+          <div class="detail-hscroll-img"><img src="feel_h5.jpg" alt="Feel H05" /></div>
+          <div class="detail-hscroll-img"><img src="feel_h6.jpg" alt="Feel H06" /></div>
+          <div class="detail-hscroll-img"><img src="feel_h7.jpg" alt="Feel H07" /></div>
+          <div class="detail-hscroll-img"><img src="feel_h8.jpg" alt="Feel H08" /></div>
+          <div class="detail-hscroll-img"><img src="feel_h9.jpg" alt="Feel H09" /></div>
+          <div class="detail-hscroll-img"><img src="feel_h10.jpg" alt="Feel H10" /></div>
+          <div class="detail-hscroll-img"><img src="feel_h11.jpg" alt="Feel H11" /></div>
+          <div class="detail-hscroll-img"><img src="feel_h12.jpg" alt="Feel H12" /></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ NUGUNA DETAIL ══ -->
+  <div id="page-nuguna" class="detail-page">
+    <div class="detail-title-block">
+      <span class="dt-name" style="font-family:'Pretendard',sans-serif;">누구나 마음속에 캐릭터 하나쯤은 품고 산다</span>
+      <span class="dt-services" style="font-style:italic;">Art Direction</span>
+      <span class="dt-credit">Jeongbin Kim 2025</span>
+    </div>
+    <div class="detail-list">
+      <div class="detail-img"><img src="nuguna_1.jpg" alt="누구나 01" /></div>
+    </div>
+  </div>
+
+
+  <!-- ══ PAINTING-1 DETAIL ══ -->
+  <div id="page-painting-1" class="detail-page">
+    <div class="detail-title-block">
+      <span class="dt-name" style="font-family:'Pretendard',sans-serif;">〈 그릇 1 〉</span>
+      <span class="dt-services" style="font-style:italic;">Mixed media on linen, 162*138</span>
+      <span class="dt-credit">Jeongbin Kim 2025</span>
+    </div>
+    <div class="detail-list">
+      <div class="detail-img"><img src="painting_1.jpg" alt="그릇 1" /></div>
+    </div>
+  </div>
+
+
+  <!-- ══ PAINTING-2 DETAIL ══ -->
+  <div id="page-painting-2" class="detail-page">
+    <div class="detail-title-block">
+      <span class="dt-name" style="font-family:'Pretendard',sans-serif;">〈 경계를 지우는 방식 〉</span>
+      <span class="dt-services" style="font-style:italic;">Oil on muslin, 183*53</span>
+      <span class="dt-credit">Jeongbin Kim 2025</span>
+    </div>
+    <div class="detail-list">
+      <div class="detail-img"><img src="painting_2a.jpg" alt="경계를 지우는 방식 01" /></div>
+      <div class="detail-img"><img src="painting_2b.jpg" alt="경계를 지우는 방식 02" /></div>
+    </div>
+  </div>
+
+  <!-- ══ PHOTO-1 DETAIL (mt.Aso) ══ -->
+  <div id="page-photo-1" class="detail-page">
+    <div class="detail-title-block">
+      <span class="dt-name">mt.Aso. Kumamoto, Japan</span>
+      <span class="dt-services">Jeongbin Kim</span>
+      <span class="dt-credit">2026</span>
+    </div>
+    <div class="detail-list">
+      <div class="detail-img"><img src="photo1_1.jpg" alt="mt.Aso 01" /></div>
+      <div class="detail-img"><img src="photo1_2.jpg" alt="mt.Aso 02" /></div>
+      <div class="detail-img"><img src="photo1_3.jpg" alt="mt.Aso 03" /></div>
+      <div class="detail-img"><img src="photo1_4.jpg" alt="mt.Aso 04" /></div>
+      <div class="detail-img"><img src="photo1_5.jpg" alt="mt.Aso 05" /></div>
+      <div class="detail-img"><img src="photo1_6.jpg" alt="mt.Aso 06" /></div>
+      <div class="detail-img"><img src="photo1_7.jpg" alt="mt.Aso 07" /></div>
+      <div class="detail-img"><img src="photo1_8.jpg" alt="mt.Aso 08" /></div>
+      <div class="detail-img"><img src="photo1_9.jpg" alt="mt.Aso 09" /></div>
+      <div class="detail-img"><img src="photo1_10.jpg" alt="mt.Aso 10" /></div>
+      <div class="detail-img"><img src="photo1_11.jpg" alt="mt.Aso 11" /></div>
+      <div class="detail-img"><img src="photo1_12.jpg" alt="mt.Aso 12" /></div>
+    </div>
+  </div>
+
+  <!-- ══ PHOTO-2 DETAIL (Pyeongtaek) ══ -->
+  <div id="page-photo-2" class="detail-page">
+    <div class="detail-title-block">
+      <span class="dt-name">Pyeongtaek, Korea</span>
+      <span class="dt-services">Jeongbin Kim</span>
+      <span class="dt-credit">2024</span>
+    </div>
+    <div class="detail-list">
+      <div class="detail-img"><img src="photo2_1.jpg" alt="Pyeongtaek 01" /></div>
+      <div class="detail-img"><img src="photo2_2.jpg" alt="Pyeongtaek 02" /></div>
+      <div class="detail-img"><img src="photo2_3.jpg" alt="Pyeongtaek 03" /></div>
+      <div class="detail-img"><img src="photo2_4.jpg" alt="Pyeongtaek 04" /></div>
+      <div class="detail-img"><img src="photo2_5.jpg" alt="Pyeongtaek 05" /></div>
+      <div class="detail-img"><img src="photo2_6.jpg" alt="Pyeongtaek 06" /></div>
+    </div>
+  </div>
+
+  <!-- ══ PAINTING-3 DETAIL ══ -->
+  <div id="page-painting-3" class="detail-page">
+    <div class="detail-title-block">
+      <span class="dt-name">〈 FEEL FEEL FEEL! 을 위한 흔적 〉</span>
+      <span class="dt-services" style="font-style:italic;">Mixed media on Newspaper, 77*96</span>
+      <span class="dt-credit">Jeongbin Kim 2025</span>
+    </div>
+    <div class="detail-list">
+      <div class="detail-img"><img src="painting_3.jpg" alt="FEEL FEEL FEEL! 을 위한 흔적" /></div>
+    </div>
+  </div>
+
+  <!-- ══ KUMAMOTO DETAIL ══ -->
+  <div id="page-kumamoto" class="detail-page">
+    <div class="detail-title-block">
+      <span class="dt-name">Kumamoto</span>
+      <span class="dt-services">Graphic Editorial Illustration</span>
+      <span class="dt-credit">Jeongbin Kim 2026</span>
+    </div>
+    <div class="detail-list">
+      <div class="detail-img"><img src="kumamoto_1.jpg" alt="Kumamoto 01" /></div>
+      <div class="detail-img"><img src="kumamoto_2.jpg" alt="Kumamoto 02" /></div>
+      <div class="detail-img"><img src="kumamoto_3.jpg" alt="Kumamoto 03" /></div>
+      <div class="detail-img"><img src="kumamoto_4.jpg" alt="Kumamoto 04" /></div>
+      <div class="detail-img"><img src="kumamoto_5.jpg" alt="Kumamoto 05" /></div>
+    </div>
+  </div>
+
+  <!-- ══ DESIGN ══ -->
+  <div id="page-design">
+    <div class="design-list">
+
+      <div class="design-entry">
+        <div class="thumb" onclick="showDetail('issen', 'design')"><img src="issen.png" alt="ISSEN" /></div>
+        <div class="caption">
+          <span class="title latin">ISSEN</span>
+          <span class="year">2026</span>
+        </div>
+      </div>
+
+      <div class="design-entry">
+        <div class="thumb" onclick="showDetail('kumamoto', 'design')"><img src="kumamoto.png" alt="Kumamoto" /></div>
+        <div class="caption">
+          <span class="title latin">Kumamoto</span>
+          <span class="year">2026</span>
+        </div>
+      </div>
+
+      <div class="design-entry">
+        <div class="thumb" onclick="showDetail('feel', 'design')"><img src="feel.jpg" alt="Make People FEEL FEEL FEEL !" /></div>
+        <div class="caption">
+          <span class="title latin">Make People FEEL FEEL FEEL !</span>
+          <span class="year">2025</span>
+        </div>
+      </div>
+
+      <div class="design-entry">
+        <div class="thumb" onclick="showDetail('nuguna', 'design')"><img src="nuguna.jpg" alt="누구나 마음속에 캐릭터 하나쯤은 품고 산다" /></div>
+        <div class="caption">
+          <span class="title">누구나 마음속에 캐릭터 하나쯤은 품고 산다</span>
+          <span class="year">2025</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ PAINTING ══ -->
+  <div id="page-painting">
+    <div class="painting-list">
+
+      <div class="painting-entry">
+        <div class="thumb" onclick="showDetail('painting-1', 'painting')" style="cursor:pointer;"><img src="painting1.jpg" alt="그릇 1" /></div>
+        <div class="caption">
+          <div class="caption-left">
+            <span class="title">그릇 1</span>
+            <span class="subtitle">Mixed media on linen, 162*138</span>
+          </div>
+          <span class="year">2025</span>
+        </div>
+      </div>
+
+      <div class="painting-entry">
+        <div class="thumb" onclick="showDetail('painting-2', 'painting')" style="cursor:pointer;"><img src="painting2.jpg" alt="경계를 지우는 방식" /></div>
+        <div class="caption">
+          <div class="caption-left">
+            <span class="title">경계를 지우는 방식</span>
+            <span class="subtitle">Oil on muslin, 183*53</span>
+          </div>
+          <span class="year">2025</span>
+        </div>
+      </div>
+
+      <div class="painting-entry">
+        <div class="thumb" onclick="showDetail('painting-3', 'painting')" style="cursor:pointer;"><img src="painting3.jpg" alt="FEEL FEEL FEEL! 을 위한 흔적" /></div>
+        <div class="caption">
+          <div class="caption-left">
+            <span class="title latin">FEEL FEEL FEEL! 을 위한 흔적</span>
+            <span class="subtitle">Mixed media on Newspaper, 77*96</span>
+          </div>
+          <span class="year">2025</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ PHOTOGRAPHY ══ -->
+  <div id="page-photography">
+    <div class="photography-list">
+
+      <div class="photography-entry">
+        <div class="thumb" onclick="showDetail('photo-1', 'photography')" style="cursor:pointer;"><img src="photo1.jpg" alt="mt.Aso, Kumamoto, Japan" /></div>
+        <div class="caption">
+          <span class="title">mt.Aso, Kumamoto, Japan</span>
+          <span class="year">2026</span>
+        </div>
+      </div>
+
+      <div class="photography-entry">
+        <div class="thumb" onclick="showDetail('photo-2', 'photography')" style="cursor:pointer;"><img src="photo2.jpg" alt="Pyeongtaek, Korea" /></div>
+        <div class="caption">
+          <span class="title">Pyeongtaek, Korea</span>
+          <span class="year">2024</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ INFO ══ -->
+  <div id="page-info">
+
+    <div class="info-bio">
+      <p>
+        <span class="inline-name" onclick="showHome()">Jeongbin Kim</span>
+        is a designer working across editorial, visual identity, creative direction, painting, photography, graphic design, and typography.
+        Her projects are developed both independently and through collaborations with strangers.
+        Her practice is grounded in an approach centered on space and conceptual thinking,
+        aiming for project-specific aesthetics and tailored solutions.
+        With a double major in fine art and design,
+        she navigates the boundary between the two disciplines,
+        bringing a distinct sensibility to her work.
+      </p>
+    </div>
+
+    <div class="info-cv">
+
+      <div class="cv-demo-block">
+        <div class="cv-demo-row">
+          <span>JEONGBIN® DEMO</span>
+          <span>Based in Seoul</span>
+        </div>
+        <div class="cv-contact-rows">
+          <span>Instagram.for.Archive</span><span>@binbbilife</span>
+          <span>Instagram.for.Design</span><span>@binbbididd</span>
+          <span>Contact</span><span>jeongbin1104@gmail.com</span>
+        </div>
+      </div>
+
+      <div class="cv-section">
+        <div class="cv-year-rows">
+          <span class="cv-section-title">SERVICES</span>
+          <div class="cv-services-content">
+            Art Direction<br>Editorial<br>Typography<br>Graphic Design<br>
+            Illustration<br>Visual Identity<br>Painting<br>Photography
+          </div>
+        </div>
+      </div>
+
+      <div class="cv-section">
+        <div class="cv-section-title">EDUCATION</div>
+        <div class="cv-year-rows">
+          <span>2022 –</span>
+          <span>Sookmyung Women's University<br>Seoul, Korea</span>
+          <span>2019 – 2022</span>
+          <span>Kaywon Art High School, Korea</span>
+        </div>
+      </div>
+
+      <div class="cv-section">
+        <div class="cv-section-title">EXPERIENCE</div>
+        <div class="cv-year-rows">
+          <span>2024 – 2026</span>
+          <span>Founder &amp; President, [MODONGSOOK]<br>Major-focused Student Organization,<br>[Sookmyung Women's University]</span>
+          <span>2024</span>
+          <span>POSCO Group University Student Brand Ambassador,<br>Contents Create</span>
+        </div>
+      </div>
+
+      <div class="cv-section">
+        <div class="cv-section-title">PROJECTS &amp; CLIENTS</div>
+        <div class="cv-year-rows">
+          <span>2026</span>
+          <span>ISSEN – Art Direction, Creative Direction, Editorial, Graphic, Photography, Film, Production, Packaging<br>
+            CAFE 24 – Brand Conference Graphic Design<br>
+            Sally Kim – Entertainment, Album Cover Design<br>
+            Orosi – Brand Pop-up Visual Identity, Space<br>
+            Kumamoto – Photography, Film, Graphic Design, Illustration<br>
+            New Year Project 2026 – Graphic Design, Illustration</span>
+          <span>2025</span>
+          <span>Make People Feel Feel Feel – Visual Design Graduation Project, Art Direction, Creative Direction, Editorial, Graphic Design, Photography, Film, Interior<br>
+            Painting Graduation Project – Oil Painting, Gouache, Oriental Paint, Dry Materials<br>
+            Glub – User Interface, User Experience Design<br>
+            Apple Like Air – Illustration, Packaging<br>
+            No Brand – Illustration<br>
+            UMAZING Supermarket – Illustration<br>
+            Pedestrian Safety Project – UI/UX Design, Campaign Planning &amp; Advertising</span>
+          <span>2024</span>
+          <span>Ways To Say Love – Editorial, Graphic Design, Interview</span>
+        </div>
+      </div>
+
+      <div class="cv-section">
+        <div class="cv-section-title">EXHIBITION</div>
+        <div class="cv-year-rows">
+          <span>2025</span>
+          <span>SMVD Grad Show, Group Exhibition, SMWU, Seoul<br>
+            SMFA Grad Show, Group Exhibition, SMWU, Seoul<br>
+            École des Beaux Arts de Versailles, &lt;AFFINITES IV&gt; Group Exhibition, Paris</span>
+          <span>2024</span>
+          <span>Painting Academic Society 1st Group Exhibition, Seoul<br>
+            &lt;Hi-High&gt; Group Exhibition, Seoul</span>
+          <span>2022</span>
+          <span>&lt;COSMOS&gt; Group Exhibition, Seoul<br>
+            &lt;SPRENGERI&gt; Group Exhibition, Seoul</span>
+          <span>2020</span>
+          <span>KHSA Painting Exhibition</span>
+        </div>
+      </div>
+
+      <div class="cv-section">
+        <div class="cv-section-title">SELECTED AWARDS</div>
+        <div class="cv-year-rows">
+          <span>2025</span>
+          <span>KOSAC; Korea Student Advertising Competition<br>
+            Special Prize, Film<br><br>
+            KOSAC; Korea Student Advertising Competition<br>
+            Honorable Mention (Seoul Regional), Advertising</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function setNav(page) {
+      document.getElementById('home-nav').style.display          = page === 'home'     ? 'flex' : 'none';
+      document.getElementById('projects-nav').style.display      = page === 'projects' ? 'flex' : 'none';
+      document.getElementById('info-nav').style.display          = page === 'info'     ? 'flex' : 'none';
+      document.getElementById('design-nav-left').style.display   = page === 'design'   ? 'flex' : 'none';
+      document.getElementById('design-nav-right').style.display  = page === 'design'   ? 'flex' : 'none';
+      document.getElementById('painting-nav-left').style.display      = page === 'painting'     ? 'flex' : 'none';
+      document.getElementById('painting-nav-right').style.display     = page === 'painting'     ? 'flex' : 'none';
+      document.getElementById('photography-nav-left').style.display   = page === 'photography' ? 'flex' : 'none';
+      document.getElementById('photography-nav-right').style.display  = page === 'photography' ? 'flex' : 'none';
+      // detail nav
+      const isDetail = !['home','projects','design','painting','photography','info'].includes(page);
+      document.getElementById('detail-nav-left').style.display  = isDetail ? 'flex' : 'none';
+      document.getElementById('detail-nav-right').style.display = isDetail ? 'flex' : 'none';
+    }
+
+    function fadeOut(el, cb) {
+      el.classList.remove('visible');
+      setTimeout(cb, 300);
+    }
+
+    const pages = ['home', 'projects', 'design', 'painting', 'photography', 'info', 'issen', 'kumamoto', 'feel', 'nuguna', 'painting-1', 'painting-2', 'painting-3', 'photo-1', 'photo-2'];
+
+    function hidePage(name) {
+      const el = document.getElementById('page-' + name);
+      if (el) { el.classList.remove('visible'); el.style.display = 'none'; }
+    }
+
+    function goTo(name, setup) {
+      const cur = _current;
+      const curEl = document.getElementById('page-' + cur);
+      const go = () => {
+        pages.forEach(p => hidePage(p));
+        const pg = document.getElementById('page-' + name);
+        pg.style.display = 'block';
+        setNav(name);
+        window.scrollTo(0, 0);
+        if (setup) setup(pg);
+        requestAnimationFrame(() => requestAnimationFrame(() => pg.classList.add('visible')));
+        _current = name;
+      };
+      if (cur !== 'home' && curEl) { fadeOut(curEl, go); }
+      else { if (curEl) curEl.style.display = 'none'; go(); }
+    }
+
+    function showHome() {
+      if (_current === 'home') return;
+      pushHistory('home');
+      const cur = _current;
+      const curEl = document.getElementById('page-' + cur);
+      const go = () => {
+        pages.forEach(p => hidePage(p));
+        const pg = document.getElementById('page-home');
+        pg.style.display = 'block';
+        setNav('home');
+        window.scrollTo(0, 0);
+        document.querySelectorAll('.image-item').forEach(el => {
+          el.style.animation = 'none'; el.offsetHeight; el.style.animation = '';
+        });
+        adjustMainHeight();
+        _current = 'home';
+      };
+      if (cur !== 'home' && curEl) { fadeOut(curEl, go); }
+      else go();
+    }
+
+    function showProjects() {
+      if (_current === 'projects') { showHome(); return; }
+      pushHistory('projects');
+      goTo('projects', (pg) => {
+        document.querySelectorAll('.project-item').forEach(el => {
+          el.style.animation = 'none'; el.offsetHeight; el.style.animation = '';
+          el.classList.add('animate');
+        });
+      });
+    }
+
+    function showDesign() {
+      if (_current === 'design') return;
+      pushHistory('design');
+      goTo('design');
+    }
+
+    function showPainting() {
+      if (_current === 'painting') return;
+      pushHistory('painting');
+      goTo('painting');
+    }
+
+    function showPhotography() {
+      if (_current === 'photography') return;
+      pushHistory('photography');
+      goTo('photography');
+    }
+
+    // parent page tracker for detail pages
+    let _detailParent = 'design';
+
+    function showDetail(id, parent) {
+      _detailParent = parent;
+      document.getElementById('detail-nav-parent').textContent = parent.charAt(0).toUpperCase() + parent.slice(1);
+      pushHistory(id, { parent });
+      goTo(id);
+    }
+
+    function goToParent() {
+      const p = _detailParent;
+      if (p === 'design') showDesign();
+      else if (p === 'painting') showPainting();
+      else if (p === 'photography') showPhotography();
+    }
+
+    function showInfo() {
+      if (_current === 'info') return;
+      pushHistory('info');
+      goTo('info');
+    }
+
+    let _current = 'home';
+    let _isNavigating = false;
+    let _history = ['home']; // 내부 히스토리 스택
+
+    function adjustMainHeight() {
+      const stack = document.getElementById('imageStack');
+      const main  = document.getElementById('main');
+      if (!stack || !main) return;
+      main.style.height = (stack.offsetTop + stack.offsetHeight + 250) + 'px';
+    }
+
+    /* ── 내부 히스토리에 push ── */
+    function pushHistory(name) {
+      _history.push(name);
+    }
+
+    /* ── 뒤로가기 ── */
+    function goBack() {
+      if (_history.length <= 1) return;
+      _history.pop(); // 현재 페이지 제거
+      const prev = _history[_history.length - 1];
+      _isNavigating = true;
+      _navigateTo(prev, () => { _isNavigating = false; });
+    }
+
+    function _navigateTo(name, cb) {
+      if (_current === name) { if (cb) cb(); return; }
+      if (name === 'home') {
+        const cur = _current;
+        const curEl = document.getElementById('page-' + cur);
+        const go = () => {
+          pages.forEach(p => hidePage(p));
+          const pg = document.getElementById('page-home');
+          pg.style.display = 'block';
+          setNav('home');
+          window.scrollTo(0, 0);
+          document.querySelectorAll('.image-item').forEach(el => {
+            el.style.animation = 'none'; el.offsetHeight; el.style.animation = '';
+          });
+          adjustMainHeight();
+          _current = 'home';
+          if (cb) cb();
+        };
+        if (cur !== 'home' && curEl) fadeOut(curEl, go); else go();
+      } else if (name === 'projects') {
+        goTo('projects', (pg) => {
+          document.querySelectorAll('.project-item').forEach(el => {
+            el.style.animation = 'none'; el.offsetHeight; el.style.animation = '';
+            el.classList.add('animate');
+          });
+          if (cb) cb();
+        });
+      } else {
+        goTo(name, () => { if (cb) cb(); });
+      }
+    }
+
+    /* ── 터치 스와이프 감지 (모바일) ── */
+    let _touchStartX = 0;
+    let _touchStartY = 0;
+
+    document.addEventListener('touchstart', (e) => {
+      _touchStartX = e.touches[0].clientX;
+      _touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - _touchStartX;
+      const dy = e.changedTouches[0].clientY - _touchStartY;
+      // 수평 스와이프가 수직보다 크고, 왼쪽→오른쪽 50px 이상
+      if (Math.abs(dx) > Math.abs(dy) && dx > 50) {
+        goBack();
+      }
+    }, { passive: true });
+
+    /* ── 트랙패드/마우스 수평 스와이프 감지 (데스크탑) ── */
+    let _wheelTimer = null;
+    let _wheelDeltaX = 0;
+
+    document.addEventListener('wheel', (e) => {
+      // 수평 스크롤이 수직보다 클 때만
+      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+      _wheelDeltaX += e.deltaX;
+      clearTimeout(_wheelTimer);
+      _wheelTimer = setTimeout(() => {
+        if (_wheelDeltaX < -80) goBack(); // 오른쪽으로 스와이프 = 뒤로
+        _wheelDeltaX = 0;
+      }, 100);
+    }, { passive: true });
+
+    window.addEventListener('load', adjustMainHeight);
+    window.addEventListener('resize', adjustMainHeight);
+  </script>
+
+</body>
+</html>
